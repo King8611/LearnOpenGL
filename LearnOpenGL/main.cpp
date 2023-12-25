@@ -135,7 +135,6 @@ int main()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    unsigned int diffuseMap = loadTexture("./Texture/container2.png");
 
     unsigned int lightCubeVAO;
     glGenVertexArrays(1, &lightCubeVAO);
@@ -155,9 +154,12 @@ int main()
     glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
+    unsigned int diffuseMap = loadTexture("./Texture/container2.png");
+    unsigned int specularMap = loadTexture("./Texture/container2_specular.png");
     lightingShader.use();
-
     lightingShader.setInt("material.diffuse", 0);
+    lightingShader.setInt("material.specular", 1);
+
     lightingShader.setVec3("objectColor", objectColor);
     lightingShader.setVec3("lightColor", lightColor);
 
@@ -187,10 +189,14 @@ int main()
         lightingShader.setVec3("objectColor", objectColor);
         //lightingShader.setVec3("lightColor", lightColor);
         
-        lightingShader.setVec3("material.specular", glm::vec3(1.0f));
+        //lightingShader.setVec3("material.specular", glm::vec3(1.0f));
         lightingShader.setFloat("material.shininess", 32.0f);
+        
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -299,7 +305,7 @@ unsigned int loadTexture(char const* path)
     unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
     if (data)
     {
-        GLenum format = GL_RED;
+        GLenum format;
         if (nrComponents == 1)
             format = GL_RED;
         else if (nrComponents == 3)
