@@ -71,7 +71,7 @@ int main()
 
     stbi_set_flip_vertically_on_load(true);
     glEnable(GL_DEPTH_TEST);
-
+    //glDepthFunc(GL_LEQUAL);
     Shader shader("./Shaders/shader.vs", "./Shaders/shader.fs");
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
